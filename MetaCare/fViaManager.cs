@@ -213,6 +213,7 @@ namespace MetaCare
 
                 if (status == FacebookHandler.Status.Success)
                 {
+                    facebookHandlerDto.IsLoggedIn = true;
                     UpdateRowStatus(row, "Bắt đầu get token");
 
                     var (cookies, token) = await facebookHandler.GetTokenAsync();

@@ -100,7 +100,6 @@
             this.dgv.ContextMenuStrip = this.contextMenuStrip1;
             this.dgv.Location = new System.Drawing.Point(12, 95);
             this.dgv.Name = "dgv";
-            this.dgv.ReadOnly = true;
             this.dgv.RowHeadersVisible = false;
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgv.Size = new System.Drawing.Size(1301, 414);
@@ -111,65 +110,55 @@
             this.cChose.FillWeight = 30F;
             this.cChose.HeaderText = "Chọn";
             this.cChose.Name = "cChose";
-            this.cChose.ReadOnly = true;
             // 
             // cStt
             // 
             this.cStt.FillWeight = 30F;
             this.cStt.HeaderText = "Stt";
             this.cStt.Name = "cStt";
-            this.cStt.ReadOnly = true;
             // 
             // cUid
             // 
             this.cUid.FillWeight = 75F;
             this.cUid.HeaderText = "Uid";
             this.cUid.Name = "cUid";
-            this.cUid.ReadOnly = true;
             // 
             // cPassword
             // 
             this.cPassword.HeaderText = "Password";
             this.cPassword.Name = "cPassword";
-            this.cPassword.ReadOnly = true;
             // 
             // cKey2Fa
             // 
             this.cKey2Fa.FillWeight = 65F;
             this.cKey2Fa.HeaderText = "Key 2FA";
             this.cKey2Fa.Name = "cKey2Fa";
-            this.cKey2Fa.ReadOnly = true;
             // 
             // cEmail
             // 
             this.cEmail.HeaderText = "Email";
             this.cEmail.Name = "cEmail";
-            this.cEmail.ReadOnly = true;
             // 
             // cPasswordMail
             // 
             this.cPasswordMail.HeaderText = "Password Mail";
             this.cPasswordMail.Name = "cPasswordMail";
-            this.cPasswordMail.ReadOnly = true;
             // 
             // cCookies
             // 
             this.cCookies.HeaderText = "Cookies";
             this.cCookies.Name = "cCookies";
-            this.cCookies.ReadOnly = true;
             // 
             // cToken
             // 
             this.cToken.HeaderText = "Token";
             this.cToken.Name = "cToken";
-            this.cToken.ReadOnly = true;
             // 
             // cStatus
             // 
             this.cStatus.FillWeight = 125F;
             this.cStatus.HeaderText = "Process";
             this.cStatus.Name = "cStatus";
-            this.cStatus.ReadOnly = true;
             // 
             // contextMenuStrip1
             // 
