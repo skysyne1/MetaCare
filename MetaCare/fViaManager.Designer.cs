@@ -57,12 +57,18 @@
             this.numMaxThread = new System.Windows.Forms.NumericUpDown();
             this.cbbTypeLogin = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numDelays)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMaxThread)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -244,6 +250,11 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.numericUpDown1);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.linkLabel1);
+            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.numDelays);
             this.groupBox1.Controls.Add(this.label2);
@@ -295,7 +306,7 @@
             this.cbbTypeLogin.Items.AddRange(new object[] {
             "Cookie",
             "Uid|Password"});
-            this.cbbTypeLogin.Location = new System.Drawing.Point(205, 31);
+            this.cbbTypeLogin.Location = new System.Drawing.Point(205, 19);
             this.cbbTypeLogin.Name = "cbbTypeLogin";
             this.cbbTypeLogin.Size = new System.Drawing.Size(150, 22);
             this.cbbTypeLogin.TabIndex = 1;
@@ -303,11 +314,58 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(147, 34);
+            this.label1.Location = new System.Drawing.Point(147, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(52, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Loại log:";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Cookie",
+            "Uid|Password"});
+            this.comboBox1.Location = new System.Drawing.Point(205, 47);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(150, 22);
+            this.comboBox1.TabIndex = 7;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(147, 50);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(41, 14);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Proxy:";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(361, 27);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(97, 14);
+            this.linkLabel1.TabIndex = 8;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Danh sách Proxy";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(361, 55);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(49, 14);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "IP/ACC:";
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(416, 50);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(41, 22);
+            this.numericUpDown1.TabIndex = 10;
             // 
             // fViaManager
             // 
@@ -324,6 +382,7 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numDelays)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMaxThread)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -358,5 +417,10 @@
         private System.Windows.Forms.NumericUpDown numMaxThread;
         private System.Windows.Forms.ToolStripMenuItem cậpNhậtThôngTinToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cookieVàTokenToolStripMenuItem;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
