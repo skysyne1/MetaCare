@@ -29,5 +29,20 @@ namespace MetaCare
                     break;
             }
         }
+
+        private void checkPTTTToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void checkTKQCToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
+        private void dánTKQCToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }
