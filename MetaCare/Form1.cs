@@ -1,6 +1,10 @@
 ﻿using MetaCare.Dtos;
 using MetaCare.Handlers;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MetaCare
 {
@@ -42,6 +46,28 @@ namespace MetaCare
 
         private void dánTKQCToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
+            dgv.Rows.Clear();
+
+            var clipboardText = Clipboard.GetText();
+
+            Task.Run(() =>
+            {
+                var lines = clipboardText.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(line => line.Trim().Replace("\r", ""))
+                                         .ToArray();
+
+                dgv.Invoke(new MethodInvoker(() =>
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        int rowIndex = dgv.Rows.Add();
+                        DataGridViewRow row = dgv.Rows[rowIndex];
+
+                        SetCellAccount(rowIndex, 1, (i + 1).ToString());
+                        SetCellAccount(rowIndex, 2, lines[i]);
+                    }
+                }));
+            });
 
         }
     }

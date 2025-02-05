@@ -6,6 +6,7 @@ using MetaCare.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace MetaCare
         private void Onload()
         {
             cbbTypeLogin.SelectedIndex = 0;
+            cbbTypeProxy.SelectedIndex = 0;
         }
 
         private void ChoseRowInDatagrid(string modeChose)
@@ -119,7 +121,7 @@ namespace MetaCare
                                 row.Cells[1].Value = rowsToAdd.Count + 1; // Dùng danh sách để xác định thứ tự
                                 row.Cells[2].Value = dataRaw[0];
                                 row.Cells[3].Value = dataRaw[1];
-                                row.Cells[4].Value = dataRaw[2].Length == 32 ? dataRaw[2] : "";
+                                row.Cells[4].Value = dataRaw[2].Length >= 32 ? dataRaw[2] : "";
                                 row.Cells[7].Value = dataRaw.FirstOrDefault(x => x.Contains("c_user"));
                                 row.Cells[8].Value = dataRaw.FirstOrDefault(x => x.Contains("EAA"));
 
@@ -294,6 +296,11 @@ namespace MetaCare
                     fAdManager.Show();
                 }
             }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("Data/Proxy.txt");
         }
     }
 }

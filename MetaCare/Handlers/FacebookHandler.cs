@@ -113,7 +113,7 @@ namespace MetaCare.Handlers
                 return Status.Fail;
             }
 
-            if (responseLogin.RequestMessage.RequestUri.AbsoluteUri == "https://www.facebook.com/?lsrc=lb")
+            if (responseLogin.RequestMessage.RequestUri.AbsoluteUri == "https://www.facebook.com/?lsrc=lb" || responseLogin.RequestMessage.RequestUri.AbsoluteUri == "https://www.facebook.com/")
             {
                 return Status.Success;
             }
