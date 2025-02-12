@@ -1,6 +1,8 @@
 ﻿using MetaCare.Dtos;
 using MetaCare.Handlers;
+using MetaCare.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +20,16 @@ namespace MetaCare
             InitializeComponent();
             FacebookHandlerDto = facebookHandlerDto;
             facebookHandler = new FacebookHandler(facebookHandlerDto);
+        }
+
+        private void SetCellAccount(int indexRow, int column, object value)
+        {
+            DatagridviewHelper.SetStatusDataGridView(this.dgv, indexRow, column, value);
+        }
+
+        private void SetCellAccount(DataGridView dgv, int indexRow, int column, object value)
+        {
+            DatagridviewHelper.SetStatusDataGridView(dgv, indexRow, column, value);
         }
 
         private void btnLoadTKQC_Click(object sender, System.EventArgs e)
@@ -46,26 +58,46 @@ namespace MetaCare
 
         private void dánTKQCToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            dgv.Rows.Clear();
+            string text = Clipboard.GetText();
 
-            var clipboardText = Clipboard.GetText();
+            // Nếu clipboard trống, không làm gì cả
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                MessageBox.Show("Clipboard trống!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             Task.Run(() =>
             {
-                var lines = clipboardText.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                                         .Select(line => line.Trim().Replace("\r", ""))
-                                         .ToArray();
+                // Tách các dòng từ Clipboard và loại bỏ dòng trống
+                string[] datas = text.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
+                                     .Select(x => x.Trim())
+                                     .Where(x => !string.IsNullOrEmpty(x))
+                                     .ToArray();
 
-                dgv.Invoke(new MethodInvoker(() =>
+                if (datas.Length == 0)
                 {
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        int rowIndex = dgv.Rows.Add();
-                        DataGridViewRow row = dgv.Rows[rowIndex];
+                    MessageBox.Show("Không có dữ liệu hợp lệ để dán!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                        SetCellAccount(rowIndex, 1, (i + 1).ToString());
-                        SetCellAccount(rowIndex, 2, lines[i]);
-                    }
+                // Tạo danh sách các dòng mới trước khi cập nhật DataGridView
+                var newRows = new List<DataGridViewRow>();
+
+                for (int i = 0; i < datas.Length; i++)
+                {
+                    var row = new DataGridViewRow();
+                    row.CreateCells(dgv); // Tạo các ô dữ liệu phù hợp với dgv
+                    row.Cells[1].Value = (i + 1).ToString();  // Cột số thứ tự
+                    row.Cells[2].Value = datas[i].Trim();     // Cột dữ liệu (bỏ ký tự `\r`)
+                    newRows.Add(row);
+                }
+
+                // Cập nhật UI trên luồng chính
+                dgv.BeginInvoke(new Action(() =>
+                {
+                    dgv.Rows.Clear(); // Xóa dữ liệu cũ
+                    dgv.Rows.AddRange(newRows.ToArray()); // Thêm tất cả dòng một lần
                 }));
             });
 

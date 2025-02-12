@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -150,6 +151,7 @@ namespace MetaCare
         private async void cookieVàTokenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int typeLogin = cbbTypeLogin.SelectedIndex;
+            int typeProxy = cbbTypeProxy.SelectedIndex;
             int maxThread = (int)numMaxThread.Value;
 
             if (maxThread == 0)
@@ -171,13 +173,13 @@ namespace MetaCare
             foreach (var row in rows)
             {
                 await semaphore.WaitAsync();
-                tasks.Add(HandleRowAsync(row, typeLogin, semaphore));
+                tasks.Add(HandleRowAsync(row, typeLogin, typeProxy, semaphore));
             }
 
             await Task.WhenAll(tasks);
         }
 
-        private async Task HandleRowAsync(DataGridViewRow row, int typeLogin, SemaphoreSlim semaphore)
+        private async Task HandleRowAsync(DataGridViewRow row, int typeLogin, int typeProxy, SemaphoreSlim semaphore)
         {
             try
             {
@@ -187,6 +189,7 @@ namespace MetaCare
                 if (typeLogin == 0 && string.IsNullOrEmpty(accountDto.Cookies))
                 {
                     UpdateRowStatus(row, "Cookie rỗng!");
+                    semaphore.Release();
                     return;
                 }
 
@@ -207,7 +210,6 @@ namespace MetaCare
                     ApiClient = apiClient,
                 };
 
-
                 var facebookHandler = new FacebookHandler(facebookHandlerDto);
                 var status = await facebookHandler.LoginFacebook();
 
@@ -217,9 +219,13 @@ namespace MetaCare
                 {
                     UpdateRowStatus(row, "Bắt đầu get token");
 
-                    var (cookies, token) = await facebookHandler.GetTokenAsync();
+                    var (cookies, token, dtsgToken) = await facebookHandler.GetTokenAsync();
                     row.Cells[7].Value = cookies;
                     row.Cells[8].Value = token;
+
+                    facebookHandlerDto.Account.TokenEAAG = token;
+                    facebookHandlerDto.Account.Cookies = cookies;
+                    facebookHandlerDto.Account.DTSGToken = dtsgToken;
 
                     if (!string.IsNullOrEmpty(cookies) && !string.IsNullOrEmpty(token))
                     {
@@ -302,5 +308,37 @@ namespace MetaCare
         {
             Process.Start("Data/Proxy.txt");
         }
+
+        private void nhậpTàiKhoảnToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var openFileDialog = new OpenFileDialog())
+            {
+                if (openFileDialog.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(openFileDialog.FileName))
+                    return;
+
+                dgv.Rows.Clear();
+                var accounts = File.ReadAllLines(openFileDialog.FileName)
+                                  .Where(line => !string.IsNullOrEmpty(line))
+                                  .Select(line => line.Split('|'))
+                                  .Where(dataRaw => dataRaw.Length >= 3)
+                                  .ToList();
+
+                var rowsToAdd = accounts.Select((dataRaw, index) =>
+                {
+                    var row = new DataGridViewRow();
+                    row.CreateCells(dgv);
+                    row.Cells[1].Value = index + 1;
+                    row.Cells[2].Value = dataRaw[0];
+                    row.Cells[3].Value = dataRaw[1];
+                    row.Cells[4].Value = dataRaw[2].Length >= 32 ? dataRaw[2] : "";
+                    row.Cells[7].Value = dataRaw.FirstOrDefault(x => x.Contains("c_user"));
+                    row.Cells[8].Value = dataRaw.FirstOrDefault(x => x.Contains("EAA"));
+                    return row;
+                }).ToList();
+
+                dgv.Invoke((Action)(() => dgv.Rows.AddRange(rowsToAdd.ToArray())));
+            }
+        }
+
     }
 }

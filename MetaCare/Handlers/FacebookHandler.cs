@@ -235,10 +235,11 @@ namespace MetaCare.Handlers
             return Status.Success;
         }
 
-        public async Task<(string, string)> GetTokenAsync()
+        public async Task<(string, string, string)> GetTokenAsync()
         {
             var token = string.Empty;
             var cookie = string.Empty;
+            var dtsgToken = string.Empty;
             try
             {
                 var response = await _entity.ApiClient.GetWithRetry("https://business.facebook.com/billing_hub/payment_activity?asset_id=");
@@ -247,17 +248,18 @@ namespace MetaCare.Handlers
                     var responseStr = await response.Content.ReadAsStringAsync();
                     token = Regex.Match(responseStr, "EAAG(.*?)\"").Value.Replace("\"", "").Replace("\\", "");
                     cookie = await GetCookie();
+                    dtsgToken = Regex.Match(responseStr, "DTSGInitialData\",\\[],{\"token\":\"(.*?)\"").Groups[1].Value;
                 }
             }
             catch { }
-            return (cookie, token);
+            return (cookie, token, dtsgToken);
         }
 
         public async Task<List<AdAccountDto>> LoadAllAdAccount()
         {
             if (string.IsNullOrEmpty(_entity.Account.TokenEAAG))
             {
-                var (cookies, token) = await GetTokenAsync();
+                var (cookies, token, _) = await GetTokenAsync();
                 _entity.Account.TokenEAAG = token;
                 _entity.Account.Cookies = cookies;
             }
