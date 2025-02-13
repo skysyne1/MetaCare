@@ -3,6 +3,8 @@ using MetaCare.Contants;
 using MetaCare.Dtos;
 using MetaCare.Handlers;
 using MetaCare.Helpers;
+using MetaCare.Proxy.Managers;
+using MetaCare.Proxy.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,6 +19,9 @@ namespace MetaCare
 {
     public partial class fViaManager : Form
     {
+        List<ProxyService> ProxyServices = null;
+        ProxyManager proxyManager = null;
+
         public fViaManager()
         {
             InitializeComponent();
@@ -152,7 +157,9 @@ namespace MetaCare
         {
             int typeLogin = cbbTypeLogin.SelectedIndex;
             int typeProxy = cbbTypeProxy.SelectedIndex;
+            int limitThreadUse = (int)numLimitThreadUse.Value;
             int maxThread = (int)numMaxThread.Value;
+            var lstProxy = File.ReadAllLines("Data//Proxy.txt");
 
             if (maxThread == 0)
             {
@@ -167,19 +174,89 @@ namespace MetaCare
                 return;
             }
 
+            if (typeProxy != 0)
+            {
+                foreach (var proxy in lstProxy)
+                {
+                    var proxyRaw = proxy.Split('|');
+                    if (proxyRaw.Length > 1)
+                    {
+                        var proxyService = new ProxyService(proxyRaw[0], proxyRaw[1], typeProxy, limitThreadUse);
+                        if (!proxyService.ResetProxy())
+                        {
+                            continue;
+                        }
+
+                        ProxyServices.Add(proxyService);
+                    }
+                    else if (proxyRaw.Length == 1 && typeProxy == 1)
+                    {
+                        var proxyService = new ProxyService(proxyRaw[0], "", typeProxy, limitThreadUse);
+                        if (!proxyService.ResetProxy())
+                        {
+                            continue;
+                        }
+
+                        ProxyServices.Add(proxyService);
+                    }
+                    else if (typeProxy == 2)
+                    {
+                        var proxyService = new ProxyService(proxyRaw[0], "", typeProxy, limitThreadUse);
+                        if (!proxyService.ResetProxy())
+                        {
+                            continue;
+                        }
+
+                        ProxyServices.Add(proxyService);
+                    }
+                }
+
+                maxThread = Math.Min(maxThread, ProxyServices.Count * limitThreadUse);
+
+                proxyManager = new ProxyManager(ProxyServices);
+            }
+
             var tasks = new List<Task>();
             var semaphore = new SemaphoreSlim(maxThread, maxThread);
 
             foreach (var row in rows)
             {
                 await semaphore.WaitAsync();
-                tasks.Add(HandleRowAsync(row, typeLogin, typeProxy, semaphore));
+                tasks.Add(Task.Run(async () =>
+                {
+                    string proxy = string.Empty;
+                    ProxyService proxyService = null;
+                    if (typeProxy != 0)
+                    {
+                        while (proxyService == null)
+                        {
+                            proxyService = proxyManager.GetAvailableProxy();
+                            if (proxyService == null)
+                            {
+                                // Nếu không có proxy khả dụng, chờ 1 giây trước khi thử lại
+                                await Task.Delay(1000);
+                            }
+                        }
+
+                        proxy = proxyService.Proxy;
+                    }
+
+                    try
+                    {
+                        await HandleRowAsync(row, typeLogin, proxy);
+                    }
+                    catch
+                    {
+                        UpdateRowStatus(row, "Lỗi!");
+                    }
+                    finally { semaphore.Release(); }
+                }));
             }
 
             await Task.WhenAll(tasks);
         }
 
-        private async Task HandleRowAsync(DataGridViewRow row, int typeLogin, int typeProxy, SemaphoreSlim semaphore)
+        private async Task HandleRowAsync(DataGridViewRow row, int typeLogin, string proxy)
         {
             try
             {
@@ -189,18 +266,17 @@ namespace MetaCare
                 if (typeLogin == 0 && string.IsNullOrEmpty(accountDto.Cookies))
                 {
                     UpdateRowStatus(row, "Cookie rỗng!");
-                    semaphore.Release();
                     return;
                 }
 
                 ApiClient apiClient = null;
                 if (typeLogin == 0 && !string.IsNullOrEmpty(accountDto.Cookies))
                 {
-                    apiClient = new ApiClient(accountDto, true, FacebookContant.UserAgent);
+                    apiClient = new ApiClient(accountDto, true, FacebookContant.UserAgent, proxy);
                 }
                 else
                 {
-                    apiClient = new ApiClient(accountDto, false, FacebookContant.UserAgent);
+                    apiClient = new ApiClient(accountDto, false, FacebookContant.UserAgent, proxy);
                 }
 
                 var facebookHandlerDto = new FacebookHandlerDto
@@ -243,10 +319,6 @@ namespace MetaCare
             {
                 UpdateRowStatus(row, "Lỗi đăng nhập");
             }
-            finally
-            {
-                semaphore.Release();
-            }
         }
 
         private void UpdateRowStatus(DataGridViewRow row, string status)
@@ -275,7 +347,7 @@ namespace MetaCare
 
         private void quảnLýQuảngCáoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int typeLogin = (int)cbbTypeLogin.SelectedIndex;
+            int typeLogin = cbbTypeLogin.SelectedIndex;
             var rows = GetCheckedRows();
             foreach (DataGridViewRow row in rows)
             {

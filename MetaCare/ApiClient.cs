@@ -17,14 +17,16 @@ namespace MetaCare
         private AccountDto _accountDto;
         private string _cookies;
         private string _userAgent;
+        private string _Proxy;
         private bool _isUseCookie;
 
-        public ApiClient(AccountDto accountDto, bool isUseCookie = false, string userAgent = "")
+        public ApiClient(AccountDto accountDto, bool isUseCookie = false, string userAgent = "", string proxy = "")
         {
             _accountDto = accountDto;
             _cookies = accountDto.Cookies;
             _userAgent = userAgent;
             _isUseCookie = isUseCookie;
+            _Proxy = proxy;
             Init();
         }
 
@@ -56,8 +58,38 @@ namespace MetaCare
                 CookieContainer = _cookieContainer,
                 UseCookies = true,
                 UseDefaultCredentials = false,
-                SslProtocols = System.Security.Authentication.SslProtocols.Tls12
+                SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
             };
+
+            if (!string.IsNullOrEmpty(_Proxy))
+            {
+                if (_Proxy.Split(':').Length > 2)
+                {
+                    var proxyRaw = _Proxy.Split(':');
+                    var proxy = new WebProxy
+                    {
+                        Address = new Uri($"http://{proxyRaw[0]}:{proxyRaw[1]}"),
+                        BypassProxyOnLocal = false,
+                        UseDefaultCredentials = false,
+
+                        // *** These creds are given to the proxy server, not the web server ***
+                        Credentials = new NetworkCredential(
+                            userName: proxyRaw[2],
+                            password: proxyRaw[3])
+                    };
+                    httpClientHandler.Proxy = proxy;
+                }
+                else
+                {
+                    var proxy = new WebProxy
+                    {
+                        Address = new Uri($"http://{_Proxy}"),
+                        BypassProxyOnLocal = false,
+                        UseDefaultCredentials = false,
+                    };
+                    httpClientHandler.Proxy = proxy;
+                }
+            }
 
             _apiClient = new HttpClient(httpClientHandler);
             if (!string.IsNullOrEmpty(_userAgent))
