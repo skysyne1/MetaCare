@@ -32,6 +32,8 @@ namespace MetaCare
         {
             cbbTypeLogin.SelectedIndex = 0;
             cbbTypeProxy.SelectedIndex = 0;
+            cbbFeature.SelectedIndex = 0;
+            cbbTypeName.SelectedIndex = 0;
         }
 
         private void ChoseRowInDatagrid(string modeChose)
@@ -412,5 +414,48 @@ namespace MetaCare
             }
         }
 
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            var maxThread = (int)numMaxThread.Value;
+            var delays = (int)numDelays.Value;
+            var typeLogin = cbbTypeLogin.SelectedIndex;
+            var typeProxy = cbbTypeProxy.SelectedIndex;
+            var limitThreadUse = (int)numLimitThreadUse.Value;
+
+            if (typeProxy != 0)
+            {
+                var lstProxy = File.ReadLines("Data//Proxy.txt");
+
+                foreach(var proxy in lstProxy)
+                {
+                    var proxyService = new ProxyService(proxy, "", typeProxy, limitThreadUse);
+                    ProxyServices.Add(proxyService);
+                }
+            }
+        }
+
+        private void rtbLinksBM_TextChanged(object sender, EventArgs e)
+        {
+            int linkCount = rtbLinksBM.Lines.Count(x => x.Contains("https://fb.me/"));
+            lbTotalLinkBM.Text = $"Tổng link: {linkCount}";
+        }
+
+        private void rtbMailPass_TextChanged(object sender, EventArgs e)
+        {
+            int mailpassCount = rtbMailPass.Lines.Count(x => x.Contains("|"));
+            lbTotalMailPass.Text = $"Tổng mail|pass: {mailpassCount}";
+        }
+
+        private void cbbTypeName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((sender as ComboBox).SelectedIndex == 1)
+            {
+                tbCustomName.Visible = true;
+            }
+            else
+            {
+                tbCustomName.Visible = false;
+            }
+        }
     }
 }
