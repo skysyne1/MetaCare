@@ -19,16 +19,18 @@ namespace MetaCare
 {
     public partial class fViaManager : Form
     {
-        List<ProxyService> ProxyServices = null;
-        ProxyManager proxyManager = null;
+        private readonly List<ProxyService> _proxyServices;
+        private ProxyManager _proxyManager;
+        private const int DEFAULT_DELAY = 1000; // ms
 
         public fViaManager()
         {
             InitializeComponent();
-            Onload();
+            _proxyServices = new List<ProxyService>();
+            InitializeComboBoxes();
         }
 
-        private void Onload()
+        private void InitializeComboBoxes()
         {
             cbbTypeLogin.SelectedIndex = 0;
             cbbTypeProxy.SelectedIndex = 0;
@@ -36,63 +38,97 @@ namespace MetaCare
             cbbTypeName.SelectedIndex = 0;
         }
 
-        private void ChoseRowInDatagrid(string modeChose)
+        private void ChoseRowInDatagrid(SelectionMode mode)
         {
-            if (!(modeChose == "ToggleCheck"))
+            switch (mode)
             {
-                if (!(modeChose == "SelectHighline"))
+                case SelectionMode.All:
+                    SetAllRowsSelection(true);
+                    break;
+                case SelectionMode.None:
+                    SetAllRowsSelection(false);
+                    break;
+                case SelectionMode.Selected:
+                    SetSelectedRowsSelection(true);
+                    break;
+                case SelectionMode.Toggle:
+                    ToggleSelectedRowsSelection();
+                    break;
+            }
+        }
+
+        private void SetAllRowsSelection(bool selected)
+        {
+            for (int i = 0; i < dgv.RowCount; i++)
+            {
+                DatagridviewHelper.SetStatusDataGridView(dgv, i, "cChose", selected);
+            }
+        }
+
+        private void SetSelectedRowsSelection(bool selected)
+        {
+            foreach (DataGridViewRow row in dgv.SelectedRows)
+            {
+                DatagridviewHelper.SetStatusDataGridView(dgv, row.Index, "cChose", selected);
+            }
+        }
+
+        private void ToggleSelectedRowsSelection()
+        {
+            foreach (DataGridViewRow row in dgv.SelectedRows)
+            {
+                int index = row.Index;
+                bool currentStatus = Convert.ToBoolean(DatagridviewHelper.GetStatusDataGridView(dgv, index, "cChose"));
+                DatagridviewHelper.SetStatusDataGridView(dgv, index, "cChose", !currentStatus);
+            }
+        }
+
+        private void InitializeProxyServices(int typeProxy, int limitThreadUse)
+        {
+            if (typeProxy == 0) return;
+
+            var proxyLines = File.ReadAllLines("Data//Proxy.txt");
+            foreach (var line in proxyLines)
+            {
+                var proxyParts = line.Split('|');
+                var proxyService = CreateProxyService(proxyParts, typeProxy, limitThreadUse);
+                
+                if (proxyService != null && proxyService.ResetProxy())
                 {
-                    if (!(modeChose == "UnAll"))
-                    {
-                        if (modeChose == "All")
-                        {
-                            for (int i = 0; i < this.dgv.RowCount; i++)
-                            {
-                                DatagridviewHelper.SetStatusDataGridView(dgv, i, "cChose", true);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int j = 0; j < this.dgv.RowCount; j++)
-                        {
-                            DatagridviewHelper.SetStatusDataGridView(dgv, j, "cChose", false);
-                        }
-                    }
-                }
-                else
-                {
-                    DataGridViewSelectedRowCollection selectedRows = this.dgv.SelectedRows;
-                    for (int k = 0; k < selectedRows.Count; k++)
-                    {
-                        DatagridviewHelper.SetStatusDataGridView(dgv, selectedRows[k].Index, "cChose", true);
-                    }
+                    _proxyServices.Add(proxyService);
                 }
             }
-            else
+
+            _proxyManager = new ProxyManager(_proxyServices);
+        }
+
+        private ProxyService CreateProxyService(string[] proxyParts, int typeProxy, int limitThreadUse)
+        {
+            if (proxyParts.Length > 1)
             {
-                for (int l = 0; l < this.dgv.SelectedRows.Count; l++)
-                {
-                    int index = this.dgv.SelectedRows[l].Index;
-                    DatagridviewHelper.SetStatusDataGridView(dgv, index, "cChose", !Convert.ToBoolean(DatagridviewHelper.GetStatusDataGridView(dgv, index, "cChose")));
-                }
+                return new ProxyService(proxyParts[0], proxyParts[1], typeProxy, limitThreadUse);
             }
+            else if (proxyParts.Length == 1 && (typeProxy == 1 || typeProxy == 2))
+            {
+                return new ProxyService(proxyParts[0], "", typeProxy, limitThreadUse);
+            }
+            return null;
         }
 
         private void chọnBôiĐenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ChoseRowInDatagrid("SelectHighline");
+            ChoseRowInDatagrid(SelectionMode.Selected);
         }
 
         private void chọnTấtCảToolStripMenuItem_Click(object sender, EventArgs e)
         {
             dgv.CurrentCell = dgv.CurrentRow.Cells[1];
-            ChoseRowInDatagrid("All");
+            ChoseRowInDatagrid(SelectionMode.All);
         }
 
         private void bỏChọnTấtCảToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ChoseRowInDatagrid("UnAll");
+            ChoseRowInDatagrid(SelectionMode.None);
         }
 
         private void dánTàiKhoảnToolStripMenuItem_Click(object sender, EventArgs e)
@@ -161,7 +197,6 @@ namespace MetaCare
             int typeProxy = cbbTypeProxy.SelectedIndex;
             int limitThreadUse = (int)numLimitThreadUse.Value;
             int maxThread = (int)numMaxThread.Value;
-            var lstProxy = File.ReadAllLines("Data//Proxy.txt");
 
             if (maxThread == 0)
             {
@@ -176,46 +211,11 @@ namespace MetaCare
                 return;
             }
 
+            InitializeProxyServices(typeProxy, limitThreadUse);
+
             if (typeProxy != 0)
             {
-                foreach (var proxy in lstProxy)
-                {
-                    var proxyRaw = proxy.Split('|');
-                    if (proxyRaw.Length > 1)
-                    {
-                        var proxyService = new ProxyService(proxyRaw[0], proxyRaw[1], typeProxy, limitThreadUse);
-                        if (!proxyService.ResetProxy())
-                        {
-                            continue;
-                        }
-
-                        ProxyServices.Add(proxyService);
-                    }
-                    else if (proxyRaw.Length == 1 && typeProxy == 1)
-                    {
-                        var proxyService = new ProxyService(proxyRaw[0], "", typeProxy, limitThreadUse);
-                        if (!proxyService.ResetProxy())
-                        {
-                            continue;
-                        }
-
-                        ProxyServices.Add(proxyService);
-                    }
-                    else if (typeProxy == 2)
-                    {
-                        var proxyService = new ProxyService(proxyRaw[0], "", typeProxy, limitThreadUse);
-                        if (!proxyService.ResetProxy())
-                        {
-                            continue;
-                        }
-
-                        ProxyServices.Add(proxyService);
-                    }
-                }
-
-                maxThread = Math.Min(maxThread, ProxyServices.Count * limitThreadUse);
-
-                proxyManager = new ProxyManager(ProxyServices);
+                maxThread = Math.Min(maxThread, _proxyServices.Count * limitThreadUse);
             }
 
             var tasks = new List<Task>();
@@ -232,7 +232,7 @@ namespace MetaCare
                     {
                         while (proxyService == null)
                         {
-                            proxyService = proxyManager.GetAvailableProxy();
+                            proxyService = _proxyManager.GetAvailableProxy();
                             if (proxyService == null)
                             {
                                 // Nếu không có proxy khả dụng, chờ 1 giây trước khi thử lại
@@ -314,7 +314,7 @@ namespace MetaCare
                 }
                 else
                 {
-                    UpdateRowStatus(row, $"Đăng nhập thất bại=> {status}");
+                    UpdateRowStatus(row, $"Đăng nhập thất bại=> {status.ToString()}");
                 }
             }
             catch
@@ -380,7 +380,7 @@ namespace MetaCare
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("Data/Proxy.txt");
+            Process.Start("Data//Proxy.txt");
         }
 
         private void nhậpTàiKhoảnToolStripMenuItem_Click(object sender, EventArgs e)
@@ -429,7 +429,7 @@ namespace MetaCare
                 foreach(var proxy in lstProxy)
                 {
                     var proxyService = new ProxyService(proxy, "", typeProxy, limitThreadUse);
-                    ProxyServices.Add(proxyService);
+                    _proxyServices.Add(proxyService);
                 }
             }
         }
@@ -456,6 +456,14 @@ namespace MetaCare
             {
                 tbCustomName.Visible = false;
             }
+        }
+
+        private enum SelectionMode
+        {
+            All,
+            None,
+            Selected,
+            Toggle
         }
     }
 }

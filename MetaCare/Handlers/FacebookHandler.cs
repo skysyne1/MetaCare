@@ -31,6 +31,9 @@ namespace MetaCare.Handlers
             CheckpointCaptcha,
             Checkpoint681,
             Checkpoint,
+            [EnumMember(Value = "Checkpoint 282")]
+            Checkpoint282,
+            Checkpoint956,
             Error2FA,
             Error
         }
@@ -41,7 +44,7 @@ namespace MetaCare.Handlers
 
             if (_entity.TypeLogin == 0)
             {
-                if (!await CheckCookieStatus(_entity.Account.Uid))
+                if (await CheckCookieStatus(_entity.Account.Uid) != Status.Success)
                 {
                     return Status.Checkpoint;
                 }
@@ -86,17 +89,21 @@ namespace MetaCare.Handlers
             var passwordEncrypt = PasswordEncrypt.FacebookEncryptHelper.GenerateEncPassword(_entity.Account.Password, publicKey, keyId, "5");
 
             var httpRequestMessage = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, originUri);
-            _entity.ApiClient._cookieContainer.Add(new System.Net.Cookie
+            if (!string.IsNullOrEmpty(datr))
             {
-                Name = "datr",
-                Value = datr,
-                Path = "/",
-                Domain = "facebook.com",
-                Expired = false,
-                Secure = true,
-                Expires = DateTime.Now.AddDays(10)
-            });
-            httpRequestMessage.Headers.Add("Cookie", $"datr={datr}");
+                _entity.ApiClient._cookieContainer.Add(new System.Net.Cookie
+                {
+                    Name = "datr",
+                    Value = datr,
+                    Path = "/",
+                    Domain = "facebook.com",
+                    Expired = false,
+                    Secure = true,
+                    Expires = DateTime.Now.AddDays(10)
+                });
+
+                var cookies = await _entity.ApiClient._cookieContainer.CookieToString("https://www.facebook.com/");
+            }
             httpRequestMessage.Content = new System.Net.Http.FormUrlEncodedContent(new[]
             {
                     new KeyValuePair<string, string>("jazoest", jazoest),
@@ -226,11 +233,8 @@ namespace MetaCare.Handlers
                     }
                 }
 
-                if (!await CheckCookieStatus(_entity.Account.Uid))
-                {
-                    return Status.Checkpoint;
-                }
-                return Status.Success;
+                
+                return await CheckCookieStatus(_entity.Account.Uid);
             }
             return Status.Success;
         }
@@ -455,15 +459,24 @@ namespace MetaCare.Handlers
             return await _entity.ApiClient._cookieContainer.CookieToString("https://www.facebook.com/");
         }
 
-        public async Task<bool> CheckCookieStatus(string uid)
+        public async Task<Status> CheckCookieStatus(string uid)
         {
             var response = await _entity.ApiClient.GetWithRetry("https://www.facebook.com/me");
             var responseStr = await response.Content.ReadAsStringAsync();
-            if (Regex.Match(responseStr, "\"USER_ID\":\"(.*?)\"").Groups[1].Value.Trim() == uid.Trim() && !response.RequestMessage.RequestUri.AbsolutePath.Contains("1501092823525282") && !response.RequestMessage.RequestUri.AbsolutePath.Contains("828281030927956"))
+            if (response.RequestMessage.RequestUri.AbsolutePath.Contains("1501092823525282"))
             {
-                return true;
+                return Status.Checkpoint282;
             }
-            return false;
+
+            if (response.RequestMessage.RequestUri.AbsolutePath.Contains("828281030927956"))
+            {
+                return Status.Checkpoint956;
+            }
+            if (Regex.Match(responseStr, "\"USER_ID\":\"(.*?)\"").Groups[1].Value.Trim() == uid.Trim())
+            {
+                return Status.Success;
+            }
+            return Status.Checkpoint;
         }
     }
 }
