@@ -1,12 +1,12 @@
 ﻿using MetaCare.Dtos;
 using MetaCare.Handlers;
 using MetaCare.Helpers;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MetaCare
 {
@@ -32,18 +32,71 @@ namespace MetaCare
             DatagridviewHelper.SetStatusDataGridView(dgv, indexRow, column, value);
         }
 
-        private void btnLoadTKQC_Click(object sender, System.EventArgs e)
+        private async void btnLoadTKQC_Click(object sender, System.EventArgs e)
         {
             int typeLoadTKQC = (int)cbbTypeLoadTKQC.SelectedIndex;
             switch (typeLoadTKQC)
             {
                 case 0:
+                    await LoadAllAdsAccount();
                     break;
                 case 1:
                     break;
                 case 2:
                     break;
             }
+        }
+
+        private async Task LoadAllAdsAccount()
+        {
+            var status = await facebookHandler.LoginFacebook();
+            if (status != FacebookHandler.Status.Success)
+            {
+                MessageBox.Show($"Login thất bại =>{status}", "Thông báo");
+                return;
+            }
+
+            var adsAccountDatas = await facebookHandler.LoadAllAdAccount();
+            
+            foreach (var adAccountDto in adsAccountDatas)
+            {
+                int add = 0;
+
+                lock (dgv)
+                {
+                    dgv.Invoke((Action)delegate
+                    {
+                        add = dgv.Rows.Add();
+                    });
+                }
+
+                DataGridViewRow row = dgv.Rows[add];
+
+                row.Cells[1].Value = (add + 1);
+
+                Task.Run(() =>
+                {
+                    SetDataAdAccount(row.Index, adAccountDto);
+                });
+            }
+        }
+
+        private void SetDataAdAccount(int index, AdAccountDto adAccount)
+        {
+            SetCellAccount(index, 1, adAccount.Id);
+            SetCellAccount(index, 2, adAccount.Name);
+            SetCellAccount(index, 3, adAccount.Currency);
+            SetCellAccount(index, 4, adAccount.Limit);
+            SetCellAccount(index, 5, adAccount.Threshold);
+            SetCellAccount(index, 6, adAccount.Balance);
+            SetCellAccount(index, 7, adAccount.Spent);
+            SetCellAccount(index, 8, adAccount.Payment);
+            SetCellAccount(index, 9, $"{adAccount.BusinessCountryCode}/{adAccount.TimeZone}");
+            SetCellAccount(index, 10, adAccount.CampaignCount); ;
+            SetCellAccount(index, 11, adAccount.LimitSet);
+            SetCellAccount(index, 12, adAccount.Owner);
+            SetCellAccount(index, 13, adAccount.Status);
+            SetCellAccount(index, 14, "Done");
         }
 
         private void checkPTTTToolStripMenuItem_Click(object sender, System.EventArgs e)

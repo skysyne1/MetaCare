@@ -11,6 +11,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -171,6 +172,17 @@ namespace MetaCare
 
                                 rowsToAdd.Add(row);
                             }
+                            else if (dataRaw.Length == 1 && dataRaw[0].Contains("c_user"))
+                            {
+                                var uid = Regex.Match(dataRaw[0], "c_user=(.*?);").Groups[1].Value;
+                                var row = new DataGridViewRow();
+                                row.CreateCells(dgv);
+
+                                row.Cells[1].Value = rowsToAdd.Count + 1; // Dùng danh sách để xác định thứ tự
+                                row.Cells[2].Value = uid;
+                                row.Cells[7].Value = dataRaw[0];
+                                rowsToAdd.Add(row);
+                            }
                         }
                     }
 
@@ -298,16 +310,21 @@ namespace MetaCare
                     UpdateRowStatus(row, "Bắt đầu get token");
 
                     var (cookies, token, dtsgToken) = await facebookHandler.GetTokenAsync();
+                    var name = await facebookHandler.GetName();
                     row.Cells[7].Value = cookies;
                     row.Cells[8].Value = token;
 
                     facebookHandlerDto.Account.TokenEAAG = token;
                     facebookHandlerDto.Account.Cookies = cookies;
                     facebookHandlerDto.Account.DTSGToken = dtsgToken;
+                    facebookHandlerDto.Account.Name = name;
 
                     if (!string.IsNullOrEmpty(cookies) && !string.IsNullOrEmpty(token))
                     {
-                        FacebookContainer.Instance.FacebookHandlers.Add(facebookHandlerDto);
+                        if (!FacebookContainer.Instance.FacebookHandlers.Contains(facebookHandlerDto))
+                        {
+                            FacebookContainer.Instance.FacebookHandlers.Add(facebookHandlerDto);
+                        }
                     }
 
                     UpdateRowStatus(row, "Get token xong");
@@ -340,7 +357,7 @@ namespace MetaCare
             return new AccountDto
             {
                 Uid = row.Cells[2].Value.ToString(),
-                Password = row.Cells[3].Value.ToString(),
+                Password = row.Cells[3].Value?.ToString(),
                 Key2Fa = row.Cells[4].Value?.ToString(),
                 Cookies = row.Cells[7].Value?.ToString(),
                 TokenEAAG = row.Cells[8].Value?.ToString()
@@ -354,12 +371,12 @@ namespace MetaCare
             foreach (DataGridViewRow row in rows)
             {
                 var accountDto = CreateAccountDto(row);
-                var exists = FacebookContainer.Instance.FacebookHandlers.FirstOrDefault(x => x.Account == accountDto);
+                var exists = FacebookContainer.Instance.FacebookHandlers.FirstOrDefault(x => x.Account.Uid == accountDto.Uid);
                 if (exists != null)
                 {
                     var fAdManager = new Form1(exists)
                     {
-                        Text = accountDto.Uid + "-" + accountDto.Name
+                        Text = exists.Account.Uid + "-" + exists.Account.Name
                     };
                     fAdManager.Show();
                 }

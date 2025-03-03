@@ -259,6 +259,34 @@ namespace MetaCare.Handlers
             return (cookie, token, dtsgToken);
         }
 
+        public async Task<string> GetName()
+        {
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.AllowAutoRedirect = false;
+            var httpCLient = new HttpClient(handler);
+            httpCLient.DefaultRequestHeaders.UserAgent.ParseAdd(Contants.FacebookContant.UserAgent);
+            var payload = new Dictionary<string, string>
+            {
+                { "doc_id", "5341536295888250" },
+                { "variables", $"{{\"height\":500,\"scale\":1,\"userID\":\"{_entity.Account.Uid}\",\"width\":500}}" }
+            };
+
+            var response = await httpCLient.PostAsync($"https://www.facebook.com/api/graphql", new FormUrlEncodedContent(payload));
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var contentType = response.Content.Headers.ContentType?.CharSet;
+                if (!string.IsNullOrEmpty(contentType) && contentType.Contains("\"utf-8\""))
+                {
+                    response.Content.Headers.ContentType.CharSet = "utf-8";
+                }
+                var responseStr = await response.Content.ReadAsStringAsync();
+
+                var profileObject = JObject.Parse(responseStr)["data"]["profile"]["name"].ToString();
+                return (profileObject);
+            }
+            return string.Empty;
+        }
+
         public async Task<List<AdAccountDto>> LoadAllAdAccount()
         {
             if (string.IsNullOrEmpty(_entity.Account.TokenEAAG))
@@ -270,7 +298,7 @@ namespace MetaCare.Handlers
 
             var adAccounts = new List<AdAccountDto>();
             var tasks = new List<Task>();
-            var nextUrl = $"https://graph.facebook.com/v14.0/me/adaccounts?fields=business_country_code,business,spend_cap,created_time,funding_source_details,campaigns{{boosted_object_id}},account_status,adspaymentcycle,id,currency,amount_spent,balance,name,timezone_name,adtrust_dsl,disable_reason,min_billing_threshold,limit{{2000}}&summary=total_count&access_token={_entity.Account.TokenEAAG}";
+            var nextUrl = $"https://graph.facebook.com/me/adaccounts?fields=business,business_country_code,owner,spend_cap,created_time,funding_source_details,timezone_offset_hours_utc,all_payment_methods{{pm_credit_card{{display_string}}}},campaigns{{boosted_object_id}},account_status,adspaymentcycle,id,currency,amount_spent,balance,name,timezone_name,adtrust_dsl,disable_reason,min_billing_threshold,payment_method_tokens{{type}}&limit=50&summary=total_count&access_token={_entity.Account.TokenEAAG}";
 
             do
             {
@@ -299,6 +327,7 @@ namespace MetaCare.Handlers
                             var threshold = adAccountObject["min_billing_threshold"]["amount"].ToString();
                             var balance = adAccountObject["balance"].ToString();
                             var accountSpent = adAccountObject["amount_spent"].ToString();
+                            var limitSet = double.Parse(adAccountObject["spend_cap"]?.ToString()) / 100;
                             var paymentMethod = string.Empty;
                             if (adAccountObject.ContainsKey("funding_source_details"))
                             {
@@ -316,11 +345,9 @@ namespace MetaCare.Handlers
                             {
                                 timecreated = DateTimeOffset.FromUnixTimeSeconds(long.Parse(adAccountObject["created_time"].ToString())).DateTime.ToString("dd/MM/yyyy");
                             }
-                            var businessCountryCode = string.Empty;
-                            if (adAccountObject.ContainsKey("business_country_code"))
-                            {
-                                businessCountryCode = adAccountObject["business_country_code"].ToString();
-                            }
+                            var businessCountryCode = adAccountObject.ContainsKey("business_country_code") ? adAccountObject["business_country_code"].ToString() : string.Empty;
+                            var owner = adAccountObject["owner"]?.ToString();
+
                             var accountStatus = adAccountObject["account_status"].ToString();
                             if (accountStatus == "1")
                             {
@@ -432,7 +459,9 @@ namespace MetaCare.Handlers
                                 CreatedTime = timecreated,
                                 BusinessCountryCode = businessCountryCode,
                                 Threshold = threshold,
-                                Limit = statusAdTrust
+                                Limit = statusAdTrust,
+                                LimitSet = limitSet.ToString(),
+                                Owner = owner,
                             };
 
                             adAccounts.Add(adAccount);

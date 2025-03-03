@@ -48,13 +48,6 @@
             this.btnLoadBM = new System.Windows.Forms.Button();
             this.cbbBusinessManager = new System.Windows.Forms.ComboBox();
             this.dgv = new System.Windows.Forms.DataGridView();
-            this.ctmnTKQC = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.dánTKQCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkTKQCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkPTTTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mởChromeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hóaĐơnVàThanhToánToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chấtLượngTàiKhoảnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cStt = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cAdAccountId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cAdAccountName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -67,8 +60,16 @@
             this.cAdAccountRegionAndTimezone = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cAdAccountCampaign = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cGHCT = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cOwner = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cAdAccountStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cProcess = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ctmnTKQC = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.dánTKQCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkTKQCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkPTTTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mởChromeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hóaĐơnVàThanhToánToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chấtLượngTàiKhoảnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numDelays)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMaxThread)).BeginInit();
@@ -95,35 +96,39 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1474, 522);
+            this.panel1.Size = new System.Drawing.Size(1924, 642);
             this.panel1.TabIndex = 0;
             // 
             // numDelays
             // 
             this.numDelays.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numDelays.Location = new System.Drawing.Point(1157, 477);
+            this.numDelays.Location = new System.Drawing.Point(1534, 588);
+            this.numDelays.Margin = new System.Windows.Forms.Padding(4);
             this.numDelays.Name = "numDelays";
-            this.numDelays.Size = new System.Drawing.Size(55, 22);
+            this.numDelays.Size = new System.Drawing.Size(73, 26);
             this.numDelays.TabIndex = 8;
             // 
             // label4
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1092, 479);
+            this.label4.Location = new System.Drawing.Point(1447, 591);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(45, 14);
+            this.label4.Size = new System.Drawing.Size(56, 18);
             this.label4.TabIndex = 7;
             this.label4.Text = "Delays:";
             // 
             // btnStop
             // 
             this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStop.Location = new System.Drawing.Point(1367, 453);
+            this.btnStop.Location = new System.Drawing.Point(1782, 558);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(4);
             this.btnStop.Name = "btnStop";
             this.btnStop.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnStop.Size = new System.Drawing.Size(95, 40);
+            this.btnStop.Size = new System.Drawing.Size(127, 49);
             this.btnStop.TabIndex = 6;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
@@ -131,9 +136,10 @@
             // btnStart
             // 
             this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStart.Location = new System.Drawing.Point(1251, 453);
+            this.btnStart.Location = new System.Drawing.Point(1627, 558);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(4);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(95, 40);
+            this.btnStart.Size = new System.Drawing.Size(127, 49);
             this.btnStart.TabIndex = 5;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -141,18 +147,20 @@
             // numMaxThread
             // 
             this.numMaxThread.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numMaxThread.Location = new System.Drawing.Point(1157, 449);
+            this.numMaxThread.Location = new System.Drawing.Point(1534, 554);
+            this.numMaxThread.Margin = new System.Windows.Forms.Padding(4);
             this.numMaxThread.Name = "numMaxThread";
-            this.numMaxThread.Size = new System.Drawing.Size(55, 22);
+            this.numMaxThread.Size = new System.Drawing.Size(73, 26);
             this.numMaxThread.TabIndex = 4;
             // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1092, 451);
+            this.label3.Location = new System.Drawing.Point(1447, 556);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 14);
+            this.label3.Size = new System.Drawing.Size(68, 18);
             this.label3.TabIndex = 3;
             this.label3.Text = "Số luồng:";
             // 
@@ -162,19 +170,21 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl3.Controls.Add(this.tabPage4);
-            this.tabControl3.Location = new System.Drawing.Point(1088, 12);
+            this.tabControl3.Location = new System.Drawing.Point(1451, 15);
+            this.tabControl3.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl3.Name = "tabControl3";
             this.tabControl3.SelectedIndex = 0;
-            this.tabControl3.Size = new System.Drawing.Size(386, 420);
+            this.tabControl3.Size = new System.Drawing.Size(474, 517);
             this.tabControl3.TabIndex = 2;
             // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.groupBox2);
-            this.tabPage4.Location = new System.Drawing.Point(4, 23);
+            this.tabPage4.Location = new System.Drawing.Point(4, 27);
+            this.tabPage4.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage4.Size = new System.Drawing.Size(378, 393);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage4.Size = new System.Drawing.Size(466, 486);
             this.tabPage4.TabIndex = 0;
             this.tabPage4.Text = "SetCamp";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -184,9 +194,11 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Location = new System.Drawing.Point(6, 6);
+            this.groupBox2.Location = new System.Drawing.Point(8, 7);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(364, 362);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox2.Size = new System.Drawing.Size(444, 446);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Campaign";
@@ -196,18 +208,20 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Left;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1070, 522);
+            this.tabControl1.Size = new System.Drawing.Size(1427, 642);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.tabControl2);
-            this.tabPage1.Location = new System.Drawing.Point(4, 23);
+            this.tabPage1.Location = new System.Drawing.Point(4, 27);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage1.Size = new System.Drawing.Size(1062, 495);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage1.Size = new System.Drawing.Size(1419, 611);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Hiển thị";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -216,10 +230,11 @@
             // 
             this.tabControl2.Controls.Add(this.tabPage2);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl2.Location = new System.Drawing.Point(3, 3);
+            this.tabControl2.Location = new System.Drawing.Point(4, 4);
+            this.tabControl2.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(1056, 489);
+            this.tabControl2.Size = new System.Drawing.Size(1411, 603);
             this.tabControl2.TabIndex = 0;
             // 
             // tabPage2
@@ -229,10 +244,11 @@
             this.tabPage2.Controls.Add(this.btnLoadBM);
             this.tabPage2.Controls.Add(this.cbbBusinessManager);
             this.tabPage2.Controls.Add(this.dgv);
-            this.tabPage2.Location = new System.Drawing.Point(4, 23);
+            this.tabPage2.Location = new System.Drawing.Point(4, 27);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage2.Size = new System.Drawing.Size(1048, 462);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Size = new System.Drawing.Size(1403, 572);
             this.tabPage2.TabIndex = 0;
             this.tabPage2.Text = "TKQC";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -240,9 +256,10 @@
             // btnLoadTKQC
             // 
             this.btnLoadTKQC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLoadTKQC.Location = new System.Drawing.Point(6, 4);
+            this.btnLoadTKQC.Location = new System.Drawing.Point(11, 5);
+            this.btnLoadTKQC.Margin = new System.Windows.Forms.Padding(4);
             this.btnLoadTKQC.Name = "btnLoadTKQC";
-            this.btnLoadTKQC.Size = new System.Drawing.Size(119, 23);
+            this.btnLoadTKQC.Size = new System.Drawing.Size(159, 28);
             this.btnLoadTKQC.TabIndex = 7;
             this.btnLoadTKQC.Text = "Load TKQC";
             this.btnLoadTKQC.UseVisualStyleBackColor = true;
@@ -257,17 +274,19 @@
             "Tất cả",
             "TK tạo từ BM",
             "TK được share vào BM"});
-            this.cbbTypeLoadTKQC.Location = new System.Drawing.Point(132, 6);
+            this.cbbTypeLoadTKQC.Location = new System.Drawing.Point(179, 7);
+            this.cbbTypeLoadTKQC.Margin = new System.Windows.Forms.Padding(4);
             this.cbbTypeLoadTKQC.Name = "cbbTypeLoadTKQC";
-            this.cbbTypeLoadTKQC.Size = new System.Drawing.Size(216, 22);
+            this.cbbTypeLoadTKQC.Size = new System.Drawing.Size(287, 26);
             this.cbbTypeLoadTKQC.TabIndex = 6;
             // 
             // btnLoadBM
             // 
             this.btnLoadBM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLoadBM.Location = new System.Drawing.Point(745, 3);
+            this.btnLoadBM.Location = new System.Drawing.Point(996, 4);
+            this.btnLoadBM.Margin = new System.Windows.Forms.Padding(4);
             this.btnLoadBM.Name = "btnLoadBM";
-            this.btnLoadBM.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadBM.Size = new System.Drawing.Size(100, 28);
             this.btnLoadBM.TabIndex = 5;
             this.btnLoadBM.Text = "Load BM";
             this.btnLoadBM.UseVisualStyleBackColor = true;
@@ -277,9 +296,10 @@
             this.cbbBusinessManager.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbbBusinessManager.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbbBusinessManager.FormattingEnabled = true;
-            this.cbbBusinessManager.Location = new System.Drawing.Point(826, 5);
+            this.cbbBusinessManager.Location = new System.Drawing.Point(1104, 6);
+            this.cbbBusinessManager.Margin = new System.Windows.Forms.Padding(4);
             this.cbbBusinessManager.Name = "cbbBusinessManager";
-            this.cbbBusinessManager.Size = new System.Drawing.Size(216, 22);
+            this.cbbBusinessManager.Size = new System.Drawing.Size(287, 26);
             this.cbbBusinessManager.TabIndex = 1;
             // 
             // dgv
@@ -303,66 +323,16 @@
             this.cAdAccountRegionAndTimezone,
             this.cAdAccountCampaign,
             this.cGHCT,
+            this.cOwner,
             this.cAdAccountStatus,
             this.cProcess});
-            this.dgv.Location = new System.Drawing.Point(6, 34);
+            this.dgv.Location = new System.Drawing.Point(8, 42);
+            this.dgv.Margin = new System.Windows.Forms.Padding(4);
             this.dgv.Name = "dgv";
             this.dgv.RowHeadersVisible = false;
             this.dgv.RowHeadersWidth = 51;
-            this.dgv.Size = new System.Drawing.Size(1036, 421);
+            this.dgv.Size = new System.Drawing.Size(1384, 514);
             this.dgv.TabIndex = 0;
-            // 
-            // ctmnTKQC
-            // 
-            this.ctmnTKQC.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.ctmnTKQC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dánTKQCToolStripMenuItem,
-            this.checkTKQCToolStripMenuItem,
-            this.checkPTTTToolStripMenuItem,
-            this.mởChromeToolStripMenuItem,
-            this.hóaĐơnVàThanhToánToolStripMenuItem,
-            this.chấtLượngTàiKhoảnToolStripMenuItem});
-            this.ctmnTKQC.Name = "contextMenuStrip1";
-            this.ctmnTKQC.Size = new System.Drawing.Size(202, 158);
-            // 
-            // dánTKQCToolStripMenuItem
-            // 
-            this.dánTKQCToolStripMenuItem.Name = "dánTKQCToolStripMenuItem";
-            this.dánTKQCToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.dánTKQCToolStripMenuItem.Text = "Dán TKQC";
-            this.dánTKQCToolStripMenuItem.Click += new System.EventHandler(this.dánTKQCToolStripMenuItem_Click);
-            // 
-            // checkTKQCToolStripMenuItem
-            // 
-            this.checkTKQCToolStripMenuItem.Name = "checkTKQCToolStripMenuItem";
-            this.checkTKQCToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.checkTKQCToolStripMenuItem.Text = "Check TKQC";
-            this.checkTKQCToolStripMenuItem.Click += new System.EventHandler(this.checkTKQCToolStripMenuItem_Click);
-            // 
-            // checkPTTTToolStripMenuItem
-            // 
-            this.checkPTTTToolStripMenuItem.Name = "checkPTTTToolStripMenuItem";
-            this.checkPTTTToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.checkPTTTToolStripMenuItem.Text = "Check PTTT";
-            this.checkPTTTToolStripMenuItem.Click += new System.EventHandler(this.checkPTTTToolStripMenuItem_Click);
-            // 
-            // mởChromeToolStripMenuItem
-            // 
-            this.mởChromeToolStripMenuItem.Name = "mởChromeToolStripMenuItem";
-            this.mởChromeToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.mởChromeToolStripMenuItem.Text = "Trình quản lý quảng cáo";
-            // 
-            // hóaĐơnVàThanhToánToolStripMenuItem
-            // 
-            this.hóaĐơnVàThanhToánToolStripMenuItem.Name = "hóaĐơnVàThanhToánToolStripMenuItem";
-            this.hóaĐơnVàThanhToánToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.hóaĐơnVàThanhToánToolStripMenuItem.Text = "Hóa đơn và thanh toán";
-            // 
-            // chấtLượngTàiKhoảnToolStripMenuItem
-            // 
-            this.chấtLượngTàiKhoảnToolStripMenuItem.Name = "chấtLượngTàiKhoảnToolStripMenuItem";
-            this.chấtLượngTàiKhoảnToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.chấtLượngTàiKhoảnToolStripMenuItem.Text = "Chất lượng tài khoản";
             // 
             // cStt
             // 
@@ -386,7 +356,7 @@
             // cAdAccountCurrency
             // 
             this.cAdAccountCurrency.FillWeight = 30F;
-            this.cAdAccountCurrency.HeaderText = "Tiền tệ";
+            this.cAdAccountCurrency.HeaderText = "Currency";
             this.cAdAccountCurrency.MinimumWidth = 6;
             this.cAdAccountCurrency.Name = "cAdAccountCurrency";
             // 
@@ -443,7 +413,15 @@
             // 
             this.cGHCT.FillWeight = 35F;
             this.cGHCT.HeaderText = "GHCT";
+            this.cGHCT.MinimumWidth = 6;
             this.cGHCT.Name = "cGHCT";
+            // 
+            // cOwner
+            // 
+            this.cOwner.FillWeight = 55F;
+            this.cOwner.HeaderText = "Owner";
+            this.cOwner.MinimumWidth = 6;
+            this.cOwner.Name = "cOwner";
             // 
             // cAdAccountStatus
             // 
@@ -458,12 +436,65 @@
             this.cProcess.MinimumWidth = 6;
             this.cProcess.Name = "cProcess";
             // 
+            // ctmnTKQC
+            // 
+            this.ctmnTKQC.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.ctmnTKQC.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dánTKQCToolStripMenuItem,
+            this.checkTKQCToolStripMenuItem,
+            this.checkPTTTToolStripMenuItem,
+            this.mởChromeToolStripMenuItem,
+            this.hóaĐơnVàThanhToánToolStripMenuItem,
+            this.chấtLượngTàiKhoảnToolStripMenuItem});
+            this.ctmnTKQC.Name = "contextMenuStrip1";
+            this.ctmnTKQC.Size = new System.Drawing.Size(237, 148);
+            // 
+            // dánTKQCToolStripMenuItem
+            // 
+            this.dánTKQCToolStripMenuItem.Name = "dánTKQCToolStripMenuItem";
+            this.dánTKQCToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
+            this.dánTKQCToolStripMenuItem.Text = "Dán TKQC";
+            this.dánTKQCToolStripMenuItem.Click += new System.EventHandler(this.dánTKQCToolStripMenuItem_Click);
+            // 
+            // checkTKQCToolStripMenuItem
+            // 
+            this.checkTKQCToolStripMenuItem.Name = "checkTKQCToolStripMenuItem";
+            this.checkTKQCToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
+            this.checkTKQCToolStripMenuItem.Text = "Check TKQC";
+            this.checkTKQCToolStripMenuItem.Click += new System.EventHandler(this.checkTKQCToolStripMenuItem_Click);
+            // 
+            // checkPTTTToolStripMenuItem
+            // 
+            this.checkPTTTToolStripMenuItem.Name = "checkPTTTToolStripMenuItem";
+            this.checkPTTTToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
+            this.checkPTTTToolStripMenuItem.Text = "Check PTTT";
+            this.checkPTTTToolStripMenuItem.Click += new System.EventHandler(this.checkPTTTToolStripMenuItem_Click);
+            // 
+            // mởChromeToolStripMenuItem
+            // 
+            this.mởChromeToolStripMenuItem.Name = "mởChromeToolStripMenuItem";
+            this.mởChromeToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
+            this.mởChromeToolStripMenuItem.Text = "Trình quản lý quảng cáo";
+            // 
+            // hóaĐơnVàThanhToánToolStripMenuItem
+            // 
+            this.hóaĐơnVàThanhToánToolStripMenuItem.Name = "hóaĐơnVàThanhToánToolStripMenuItem";
+            this.hóaĐơnVàThanhToánToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
+            this.hóaĐơnVàThanhToánToolStripMenuItem.Text = "Hóa đơn và thanh toán";
+            // 
+            // chấtLượngTàiKhoảnToolStripMenuItem
+            // 
+            this.chấtLượngTàiKhoảnToolStripMenuItem.Name = "chấtLượngTàiKhoảnToolStripMenuItem";
+            this.chấtLượngTàiKhoảnToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
+            this.chấtLượngTàiKhoảnToolStripMenuItem.Text = "Chất lượng tài khoản";
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1474, 522);
+            this.ClientSize = new System.Drawing.Size(1924, 642);
             this.Controls.Add(this.panel1);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
@@ -522,6 +553,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn cAdAccountRegionAndTimezone;
         private System.Windows.Forms.DataGridViewTextBoxColumn cAdAccountCampaign;
         private System.Windows.Forms.DataGridViewTextBoxColumn cGHCT;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cOwner;
         private System.Windows.Forms.DataGridViewTextBoxColumn cAdAccountStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn cProcess;
     }
