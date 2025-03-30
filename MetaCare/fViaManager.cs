@@ -482,5 +482,26 @@ namespace MetaCare
             Selected,
             Toggle
         }
+
+        private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                try
+                {
+                    dgv.CurrentRow.Cells[0].Value = !Convert.ToBoolean(dgv.CurrentRow.Cells[0].Value);
+                }
+                catch { }
+            }
+        }
+
+        private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                dgv.CurrentRow.Cells[0].Value = !Convert.ToBoolean(dgv.CurrentRow.Cells[0].Value);
+            }
+            catch { }
+        }
     }
 }
